@@ -59,7 +59,10 @@ func (s *ExpenseService) GetAllTransactions() ([]domain.Transaction, error) {
 }
 
 func (s *ExpenseService) GetStatistics(year int, month time.Month) (domain.Summary, error) {
-	transactions, err := s.repo.GetAll()
+	startOfMonth := time.Date(year, month, 1, 0, 0, 0, 0, time.UTC)
+	startOfNextMonth := startOfMonth.AddDate(0, 1, 0)
+
+	transactions, err := s.repo.GetByDateRange(startOfMonth, startOfNextMonth)
 	if err != nil {
 		return domain.Summary{}, err
 	}
@@ -69,13 +72,11 @@ func (s *ExpenseService) GetStatistics(year int, month time.Month) (domain.Summa
 	}
 
 	for _, transaction := range transactions {
-		if transaction.Date.Year() == year && transaction.Date.Month() == month {
-			if transaction.Type == domain.Income {
-				summary.TotalIncome += transaction.Amount
-			} else if transaction.Type == domain.Expense {
-				summary.TotalExpense += transaction.Amount
-				summary.ExpenseByCategory[transaction.Category] += transaction.Amount
-			}
+		if transaction.Type == domain.Income {
+			summary.TotalIncome += transaction.Amount
+		} else if transaction.Type == domain.Expense {
+			summary.TotalExpense += transaction.Amount
+			summary.ExpenseByCategory[transaction.Category] += transaction.Amount
 		}
 	}
 
