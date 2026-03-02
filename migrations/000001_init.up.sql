@@ -6,3 +6,5 @@ CREATE TABLE IF NOT EXISTS transactions (
     description TEXT,
     date TIMESTAMP WITH TIME ZONE NOT NULL
 );
+
+CREATE INDEX IF NOT EXISTS idx_transactions_date ON transactions(date);
