@@ -36,4 +36,5 @@ type CreateTransactionDTO struct {
 type TransactionRepository interface {
 	Create(t Transaction) error
 	GetAll() ([]Transaction, error)
+	GetByDateRange(start, end time.Time) ([]Transaction, error)
 }

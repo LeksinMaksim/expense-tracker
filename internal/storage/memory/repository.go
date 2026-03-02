@@ -3,6 +3,7 @@ package memory
 import (
 	"expense-tracker/internal/domain"
 	"sync"
+	"time"
 )
 
 type Repository struct {
@@ -31,6 +32,21 @@ func (r *Repository) GetAll() ([]domain.Transaction, error) {
 	transactions := make([]domain.Transaction, 0, len(r.data))
 	for _, t := range r.data {
 		transactions = append(transactions, t)
+	}
+
+	return transactions, nil
+}
+
+func (r *Repository) GetByDateRange(start, end time.Time) ([]domain.Transaction, error) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	transactions := make([]domain.Transaction, 0, len(r.data))
+
+	for _, t := range r.data {
+		if (t.Date.Equal(start) || t.Date.After(start)) && t.Date.Before(end) {
+			transactions = append(transactions, t)
+		}
 	}
 
 	return transactions, nil
