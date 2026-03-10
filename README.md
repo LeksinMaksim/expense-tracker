@@ -34,7 +34,7 @@ cp .env.example .env
 ```bash
 docker-compose up --build
 ```
-API будет доступно по адресу `http://localhost:8080` (или по порту, указанному в `.env`).
+API будет доступно по адресу `http://localhost:8080`.
 
 ### 2. Локальный запуск
 Для этого способа у вас должен быть установлен Go и запущен PostgreSQL.
